@@ -1,3 +1,4 @@
+using MagicVilla_VillaAPI.Logging;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +17,7 @@ builder.Services.AddControllers(options =>
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 //builder.Services.AddSwaggerGen();
+builder.Services.AddSingleton<ILogging, Logging>();
 
 var app = builder.Build();
 
