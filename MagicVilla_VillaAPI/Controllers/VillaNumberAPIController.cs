@@ -3,6 +3,7 @@ using MagicVilla_VillaAPI.Data;
 using MagicVilla_VillaAPI.Models;
 using MagicVilla_VillaAPI.Models.Dto;
 using MagicVilla_VillaAPI.Repository.IRepository;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,11 +18,13 @@ namespace MagicVilla_VillaAPI.Controllers
         protected APIResponse _response;
         private readonly IMapper _mapper;
         private readonly IVillaNumberRepository _dbVillaNumber;
-        public VillaNumberAPIController(IVillaNumberRepository dbVillaNumber, IMapper mapper)
+        private readonly IVillaRepository _dbVilla;
+        public VillaNumberAPIController(IVillaNumberRepository dbVillaNumber, IMapper mapper, IVillaRepository dbVilla)
         {
             _dbVillaNumber = dbVillaNumber;
             _mapper = mapper;
             this._response = new();
+            _dbVilla = dbVilla;
         }
         [HttpGet]
         [ProducesResponseType(200)]
@@ -87,6 +90,11 @@ namespace MagicVilla_VillaAPI.Controllers
                 if (await _dbVillaNumber.GetAsync(u => u.VillaNo == createDTO.VillaNo) != null)
                 {
                     ModelState.AddModelError("CustomError", "Villa Already Exists");
+                    return BadRequest(ModelState);
+                }
+                if(await _dbVilla.GetAllAsync(u => u.Id == createDTO.VillaId) == null)
+                {
+                    ModelState.AddModelError("CustomError", "Villa Id is invalid");
                     return BadRequest(ModelState);
                 }
                 if (createDTO == null)
@@ -163,6 +171,11 @@ namespace MagicVilla_VillaAPI.Controllers
                 if (updateDTO == null || id != updateDTO.VillaNo)
                 {
                     return BadRequest();
+                }
+                if (await _dbVilla.GetAllAsync(u => u.Id == updateDTO.VillaId) == null)
+                {
+                    ModelState.AddModelError("CustomError", "Villa Id is invalid");
+                    return BadRequest(ModelState);
                 }
                 //var villa = _db.Villas.FirstOrDefault(u => u.Id == id);
                 //villa.Name = villaDTO.Name;
