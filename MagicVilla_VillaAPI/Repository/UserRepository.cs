@@ -29,14 +29,18 @@ namespace MagicVilla_VillaAPI.Repository
             return false;
         }
 
-        public Task<LoginResponseDTO> Login(LoginRequestDTO loginRequestDTO)
+        public async Task<LoginResponseDTO> Login(LoginRequestDTO loginRequestDTO)
         {
             var user = _db.LocalUsers.FirstOrDefault(u => u.UserName.ToLower() == loginRequestDTO.UserName.ToLower()
             && u.Password == loginRequestDTO.Password);
 
             if(user == null)
             {
-                return null;
+                return new LoginResponseDTO()
+                {
+                    Token = "",
+                    User = null
+                };
             }
             //if user was found generate JWT Token
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -59,7 +63,7 @@ namespace MagicVilla_VillaAPI.Repository
                 Token = tokenHandler.WriteToken(token),
                 User = user
             };
-            return Task.FromResult(loginResponseDTO);
+            return loginResponseDTO;
         }
 
         public async Task<LocalUser> Register(RegistrationRequestDTO registrationRequestDTO)
