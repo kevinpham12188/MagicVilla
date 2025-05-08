@@ -11,9 +11,10 @@ using System.Net;
 
 namespace MagicVilla_VillaAPI.Controllers
 {
-    [Route("api/VillaNumberAPI")]
+    [Route("api/v{version:apiVersion}/VillaNumberAPI")]
     [ApiController]
     [ApiVersion("1.0")]
+    [ApiVersion("2.0")]
     public class VillaNumberAPIController : ControllerBase
     {
         protected APIResponse _response;
@@ -28,6 +29,7 @@ namespace MagicVilla_VillaAPI.Controllers
             _dbVilla = dbVilla;
         }
         [HttpGet]
+        [MapToApiVersion("1.0")]
         [ProducesResponseType(200)]
         public async Task<ActionResult<APIResponse>> GetVillaNumbers()
         {
@@ -45,6 +47,13 @@ namespace MagicVilla_VillaAPI.Controllers
             }
             return _response;
 
+        }
+
+        [MapToApiVersion("2.0")]
+        [HttpGet]
+        public IEnumerable<string> Get()
+        {
+            return new string[] { "Value1", "Value2" };
         }
 
         [HttpGet("{id:int}", Name = "GetVillaNumber")]
