@@ -105,6 +105,23 @@ builder.Services.AddSwaggerGen(options=>
             Url = new Uri("https://example.com")
         }
     });
+    options.SwaggerDoc("v2", new OpenApiInfo
+    {
+        Version = "v2.0",
+        Title = "Magic Villa",
+        Description = "API to manage Villa",
+        TermsOfService = new Uri("https://example.com/terms"),
+        Contact = new OpenApiContact
+        {
+            Name = "My Contact",
+            Url = new Uri("https://example.com")
+        },
+        License = new OpenApiLicense
+        {
+            Name = "My Lisence",
+            Url = new Uri("https://example.com")
+        }
+    });
 });
 
 var app = builder.Build();
@@ -118,6 +135,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(options =>
     {
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "Magic_VillaV1");
+        options.SwaggerEndpoint("/swagger/v2/swagger.json", "Magic_VillaV2");
         options.RoutePrefix = string.Empty;
     });
 }
