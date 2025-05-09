@@ -26,6 +26,7 @@ namespace MagicVilla_VillaAPI.Controllers.v1
             _response = new();
         }
         [HttpGet]
+        [ResponseCache(Duration =30)]
         [Authorize]
         [ProducesResponseType(200)]
         public async Task<ActionResult<APIResponse>> GetVillas()
@@ -48,6 +49,7 @@ namespace MagicVilla_VillaAPI.Controllers.v1
 
         [HttpGet("{id:int}", Name = "GetVilla")]
         [Authorize(Roles = "admin")]
+        [ResponseCache(Duration = 30)]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(400)]
